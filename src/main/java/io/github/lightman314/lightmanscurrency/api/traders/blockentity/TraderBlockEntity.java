@@ -10,6 +10,8 @@ import io.github.lightman314.lightmanscurrency.api.taxes.TaxAPI;
 import io.github.lightman314.lightmanscurrency.api.traders.TraderAPI;
 import io.github.lightman314.lightmanscurrency.api.traders.TraderState;
 import io.github.lightman314.lightmanscurrency.api.traders.blocks.TraderBlockBase;
+import io.github.lightman314.lightmanscurrency.api.upgrades.IUpgradeable;
+import io.github.lightman314.lightmanscurrency.api.upgrades.IUpgradeableBlockEntity;
 import io.github.lightman314.lightmanscurrency.common.core.ModDataComponents;
 import io.github.lightman314.lightmanscurrency.common.items.data.TraderItemData;
 import io.github.lightman314.lightmanscurrency.common.text.TextEntry;
@@ -41,7 +43,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public abstract class TraderBlockEntity<D extends TraderData> extends EasyBlockEntity implements IOwnableBlockEntity, IServerTicker {
+public abstract class TraderBlockEntity<D extends TraderData> extends EasyBlockEntity implements IOwnableBlockEntity, IServerTicker, IUpgradeableBlockEntity {
 
 	private long traderID = -1;
 	public long getTraderID() { return this.traderID; }
@@ -52,6 +54,7 @@ public abstract class TraderBlockEntity<D extends TraderData> extends EasyBlockE
 	private boolean ignoreCustomTrader = false;
 
 	private boolean selfPickup = false;
+	public void flagAsPickup() { this.selfPickup = true; }
 	public boolean isSelfPickup() { return this.selfPickup; }
 	private boolean legitimateBreak = false;
 	public void flagAsLegitBreak() { this.legitimateBreak = true; }
@@ -306,5 +309,9 @@ public abstract class TraderBlockEntity<D extends TraderData> extends EasyBlockE
 			return be.getBlockState().getCollisionShape(be.level, be.worldPosition).bounds().move(be.worldPosition);
 		return null;
 	}
+
+	@Nullable
+	@Override
+	public IUpgradeable getUpgradeable() { return this.getTraderData(); }
 
 }
